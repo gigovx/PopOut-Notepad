@@ -1,4 +1,4 @@
-A very simple pop out claculator that clings to the side of the screen and pops up when you move your mouse to the side of the screen.
+A very simple pop out notepad/note taker that clings to the side of the screen and pops up when you move your mouse to the side of the screen.
 
 Built using Co-Pilot using the Popout-Calculator code as a base. Detects current Window theme when started and matches style, light or dark. Persistant posistioning.
 
