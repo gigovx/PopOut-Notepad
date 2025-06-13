@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['C:\\Users\\giles\\Documents\\GitHub\\PopOut-notepad\\icon.ico'],
+    icon=['icon.ico'],
 )
