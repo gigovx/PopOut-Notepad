@@ -449,50 +449,61 @@ class NotepadApp:
         self.root.after(100, self.check_hover)
     
     def slide_in(self):
+        """
+        Animate the panel out to its visible offset, then save.
+        """
         step = 10
-        if self.side == "right":
-            if self.current_offset > self.x_visible:
-                self.current_offset = max(self.current_offset - step, self.x_visible)
-                self.update_geometry()
-                self.root.after(10, self.slide_in)
-        elif self.side == "left":
-            if self.current_offset < self.x_visible:
-                self.current_offset = min(self.current_offset + step, self.x_visible)
-                self.update_geometry()
-                self.root.after(10, self.slide_in)
-        elif self.side == "top":
-            if self.current_offset < self.y_visible:
-                self.current_offset = min(self.current_offset + step, self.y_visible)
-                self.update_geometry()
-                self.root.after(10, self.slide_in)
-        elif self.side == "bottom":
-            if self.current_offset > self.y_visible:
-                self.current_offset = max(self.current_offset - step, self.y_visible)
-                self.update_geometry()
-                self.root.after(10, self.slide_in)
+
+        if self.side in ("right", "left"):
+            target = self.x_visible
+            current = self.current_offset
+        else:
+            target = self.y_visible
+            current = self.current_offset
+
+        if current != target:
+            if target < current:
+                new_offset = max(current - step, target)
+            else:
+                new_offset = min(current + step, target)
+
+            self.current_offset = new_offset
+            self.update_geometry()
+            self.root.after(10, self.slide_in)
+        else:
+            self.save_current_page()
+            self.save_config()
     
     def slide_out(self):
+        """
+        Animate the panel back to its hidden offset, then save.
+        """
         step = 10
-        if self.side == "right":
-            if self.current_offset < self.x_hidden:
-                self.current_offset = min(self.current_offset + step, self.x_hidden)
-                self.update_geometry()
-                self.root.after(10, self.slide_out)
-        elif self.side == "left":
-            if self.current_offset > self.x_hidden:
-                self.current_offset = max(self.current_offset - step, self.x_hidden)
-                self.update_geometry()
-                self.root.after(10, self.slide_out)
-        elif self.side == "top":
-            if self.current_offset > self.y_hidden:
-                self.current_offset = max(self.current_offset - step, self.y_hidden)
-                self.update_geometry()
-                self.root.after(10, self.slide_out)
-        elif self.side == "bottom":
-            if self.current_offset < self.y_hidden:
-                self.current_offset = min(self.current_offset + step, self.y_hidden)
-                self.update_geometry()
-                self.root.after(10, self.slide_out)
+
+        # Determine target and axis based on side
+        if self.side in ("right", "left"):
+            target = self.x_hidden
+            current = self.current_offset
+        else:  # top or bottom
+            target = self.y_hidden
+            current = self.current_offset
+
+        # If we’re not yet at the target, move one step closer
+        if current != target:
+            # choose direction
+            if target < current:
+                new_offset = max(current - step, target)
+            else:
+                new_offset = min(current + step, target)
+
+            self.current_offset = new_offset
+            self.update_geometry()
+            # re-invoke until we reach target
+            self.root.after(10, self.slide_out)
+        else:
+            # fully hidden: save and done
+            self.save_current_page()
+            self.save_config()
     
     # ---------- Update Methods for Right-Click Menu ----------
     def update_theme(self, new_theme):
